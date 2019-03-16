@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{ISO8601} %-5level %logger{50} - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- <appender name="ERRORFILE" class="ch.qos.logback.core.FileAppender"> -->
+	<!-- <file>/tmp/s3fs-error.log</file> -->
+	<!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter"> -->
+	<!-- <level>ERROR</level> -->
+	<!-- </filter> -->
+	<!-- <append>true</append> -->
+	<!-- <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"> -->
+	<!-- <pattern>%d{ISO8601} [%thread] %-5level %logger{35}[%method:%line] 
+		- %msg%n</pattern> -->
+	<!-- </encoder> -->
+	<!-- </appender> -->
+
+	<!-- <logger name="org.apache.http" level="ERROR" /> -->
+	<!-- <logger name="com.gargoylesoftware.htmlunit" level="WARN" /> -->
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="ERRORFILE" /> -->
+	</root>
+</configuration>
