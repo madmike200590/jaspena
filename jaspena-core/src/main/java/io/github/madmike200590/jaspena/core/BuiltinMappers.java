@@ -12,15 +12,15 @@ public final class BuiltinMappers {
     private BuiltinMappers() {
     }
 
-    public String mapStringValue(String val) {
-        return "";
+    public String mapStringValueToAsp(String val) {
+        return "\"" + val + "\"";
     }
 
-    public String mapIntegerValue(int val) {
+    public String mapIntegerValueToAsp(int val) {
         return "-1";
     }
 
-    public String mapBoolean(boolean val) {
+    public String mapBooleanValueToAsp(boolean val) {
         return "false";
     }
 

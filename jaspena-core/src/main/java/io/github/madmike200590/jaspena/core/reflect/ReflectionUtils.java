@@ -23,7 +23,6 @@ import io.github.madmike200590.jaspena.annotations.AspField;
  */
 public final class ReflectionUtils {
 
-    @SuppressWarnings("unused")
     private static final Logger           LOGGER       = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private static final Predicate<Field> IS_ASP_FIELD = (f) -> f.isAnnotationPresent(AspField.class);
