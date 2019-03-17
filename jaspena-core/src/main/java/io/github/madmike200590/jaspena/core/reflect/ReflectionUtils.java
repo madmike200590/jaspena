@@ -21,6 +21,7 @@ import io.github.madmike200590.jaspena.annotations.AspField;
  * @author Michael Langowski, e1426581@student.tuwien.ac.at
  *
  */
+// TODO take into account boolean fields with "isFLDNAME" naming
 public final class ReflectionUtils {
 
     private static final Logger           LOGGER       = LoggerFactory.getLogger(ReflectionUtils.class);
@@ -47,7 +48,7 @@ public final class ReflectionUtils {
         if (ReflectionUtils.isGetterFor(fld, candidate)) {
             return candidate;
         } else {
-            throw new RuntimeException("No suitable getter method for field " + fld.getName());
+            throw new NoSuchMethodException("No suitable getter method for field " + fld.getName());
         }
     }
 
@@ -70,6 +71,38 @@ public final class ReflectionUtils {
 
     private static String buildGetterNameFor(String fieldName) {
         return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
+    public static Method getSetterForField(Field fld) throws NoSuchMethodException, SecurityException {
+        Class<?> clazz = fld.getDeclaringClass();
+        Method candidate = clazz.getMethod(ReflectionUtils.buildSetterName(fld.getName()), fld.getType());
+        if (ReflectionUtils.isSetterFor(fld, candidate)) {
+            return candidate;
+        } else {
+            throw new NoSuchMethodException("No suitable setter method for field " + fld.getName());
+        }
+    }
+
+    private static boolean isSetterFor(Field field, Method method) {
+        Class<?> fldType = field.getType();
+        int setterParamCount = method.getParameterCount();
+        if (setterParamCount != 1) {
+            return false;
+        }
+        Class<?> paramType = method.getParameterTypes()[0];
+        if (!fldType.equals(paramType)) {
+            return false;
+        }
+        Class<?> returnType = method.getReturnType();
+        if (!returnType.equals(Void.TYPE)) {
+            return false;
+        }
+        String expectedSetterName = ReflectionUtils.buildSetterName(field.getName());
+        return method.getName().equals(expectedSetterName);
+    }
+
+    private static String buildSetterName(String fieldName) {
+        return "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
 }
