@@ -33,12 +33,13 @@ public class ClingoService extends AbstractAspSolverService {
     public static final int     ALL_ANSWER_SETS          = 0;
 
     private String              clingoCommand            = "clingo";
-    private ExecutorService     streamCollectors         = Executors.newFixedThreadPool(2);
+    private ExecutorService     streamCollectors;
 
     @Override
     public synchronized Stream<Set<String>> solve(String program, Predicate<String> filter, int numAnswerSets)
             throws AspSolverException {
         Process proc = null;
+        this.streamCollectors = Executors.newFixedThreadPool(2);
         try {
             proc = this.startClingo(numAnswerSets);
         } catch (IOException ex) {
@@ -81,7 +82,7 @@ public class ClingoService extends AbstractAspSolverService {
             throw new AspSolverException(
                     "Clingo exited abnormally, exit code = " + clingoExitCode + "\nstderr:\n" + clingoErr);
         }
-
+        this.streamCollectors.shutdown();
         return StreamSupport.stream(clingoOut.spliterator(), false);
     }
 
