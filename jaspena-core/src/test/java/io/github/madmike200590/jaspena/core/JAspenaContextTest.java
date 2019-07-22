@@ -21,13 +21,4 @@ public class JAspenaContextTest {
         Assert.assertEquals(true, ctx.getKnownPredicateTypes().contains(Car.class));
     }
 
-    @Test
-    public void defaultDecimalFormatTest() {
-        JAspenaContext ctx = JAspenaContext.newInstance();
-        String s1 = ctx.getDefaultDecimalFormat().format(12345.678901);
-        Assert.assertEquals("12345.6789", s1);
-        String s2 = ctx.getDefaultDecimalFormat().format(0.0);
-        Assert.assertEquals("0", s2);
-    }
-
 }

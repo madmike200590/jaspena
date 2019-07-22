@@ -5,7 +5,6 @@ package io.github.madmike200590.jaspena.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,24 +26,37 @@ import io.github.madmike200590.jaspena.core.reflect.ReflectionUtils;
  */
 public final class JAspenaContext {
 
-    private static final Logger                           LOGGER               = LoggerFactory
+    private static final Logger                                        LOGGER                      = LoggerFactory
             .getLogger(JAspenaContext.class);
 
-    private DecimalFormat                                 defaultDecimalFormat = new DecimalFormat("#.#####");
-
-    private final Map<Class<?>, Function<Object, String>> defaultFieldToStringMappers;
-    private final Map<Class<?>, Function<String, Object>> defaultStringToFieldMappers;
-
-    private final Set<Class<?>>                           knownPredicateTypes  = Collections
-            .synchronizedSet(new HashSet<>());
-    private final Map<Class<?>, Map<String, Method>>      getterRegistry       = Collections
+    // key is input type
+    private final Map<Class<?>, Function<Object, String>>              defaultOutboundMappers;
+    private final Map<Class<?>, Function<Object, String>>              outboundMappers             = Collections
             .synchronizedMap(new HashMap<>());
-    private final Map<Class<?>, Map<String, Method>>      setterRegistry       = Collections
+
+    private final Set<Class<?>>                                        knownPredicateTypes         = Collections
+            .synchronizedSet(new HashSet<>());
+    private final Map<Class<?>, Map<String, Method>>                   getterRegistry              = Collections
+            .synchronizedMap(new HashMap<>());
+    private final Map<Class<?>, Map<String, Method>>                   setterRegistry              = Collections
+            .synchronizedMap(new HashMap<>());
+    private final Map<Class<?>, Map<String, Function<Object, String>>> outboundFieldMapperRegistry = Collections
             .synchronizedMap(new HashMap<>());
 
     private JAspenaContext() {
-        this.defaultFieldToStringMappers = new HashMap<>();
-        this.defaultStringToFieldMappers = new HashMap<>();
+        Map<Class<?>, Function<Object, String>> fieldToStringMappers = new HashMap<>();
+        fieldToStringMappers.put(String.class, BuiltinMappers::mapStringValueToAsp);
+        fieldToStringMappers.put(Boolean.class, BuiltinMappers::mapBooleanValueToAsp);
+        fieldToStringMappers.put(Byte.class, BuiltinMappers::mapByteValueToAsp);
+        fieldToStringMappers.put(Character.class, BuiltinMappers::mapCharacterValueToAsp);
+        fieldToStringMappers.put(Short.class, BuiltinMappers::mapShortValueToAsp);
+        fieldToStringMappers.put(Integer.class, BuiltinMappers::mapIntegerValueToAsp);
+        fieldToStringMappers.put(Long.class, BuiltinMappers::mapLongValueToAsp);
+        fieldToStringMappers.put(Float.class, BuiltinMappers::mapFloatValueToAsp);
+        fieldToStringMappers.put(Double.class, BuiltinMappers::mapDoubleValueToAsp);
+        this.defaultOutboundMappers = Collections.unmodifiableMap(fieldToStringMappers);
+
+        // this.defaultStringToFieldMappers = new HashMap<>();
     }
 
     public static JAspenaContext newInstance() {
@@ -80,19 +92,17 @@ public final class JAspenaContext {
         this.knownPredicateTypes.add(clazz);
     }
 
+    private Function<Object, String> getOutboundMapperForField(Field fld) {
+
+        return null;
+    }
+
     public Set<Class<?>> getKnownPredicateTypes() {
         return Collections.unmodifiableSet(this.knownPredicateTypes);
     }
 
     public boolean isPredicateTypeRegistered(Class<?> clazz) {
         return this.knownPredicateTypes.contains(clazz);
-    }
-
-    /**
-     * @return the defaultDecimalFormat
-     */
-    public DecimalFormat getDefaultDecimalFormat() {
-        return this.defaultDecimalFormat;
     }
 
 }
