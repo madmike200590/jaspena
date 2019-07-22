@@ -16,7 +16,7 @@ public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
 
     private static final Pattern CLINGO_ANSWERSET_START_REGEX = Pattern.compile("Answer: [0-9]+");
     private static final Pattern CLINGO_ATOMS_REGEX           = Pattern.compile(
-            "-?[a-z][a-zA-Z0-9_]*(\\(([a-z][a-zA-Z0-9_]*|[0-9]+)(,([a-z][a-zA-Z0-9_]*|[0-9]+))*\\))?( -?[a-z][a-zA-Z0-9_]*(\\(([a-z][a-zA-Z0-9_]*|[0-9]+)(,([a-z][a-zA-Z0-9_]*|[0-9]+))*\\))?)*");
+            "-?[a-z][a-zA-Z0-9_]*(\\(([a-z][a-zA-Z0-9_]*|[0-9]+)(,([a-z][a-zA-Z0-9_]*|[0-9]+))*\\))?");
 
     public ClingoAnswerSetCollector(InputStream is) {
         super(is);
@@ -26,13 +26,12 @@ public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
     protected Set<String> extractAtoms(String line) {
         String[] atoms = line.split(" ");
         Set<String> retVal = new HashSet<>();
+        for (String atom : atoms) {
+            if (!CLINGO_ATOMS_REGEX.matcher(atom).matches()) {
+                return retVal;
+            }
+        }
         retVal.addAll(Arrays.asList(atoms));
-        return retVal;
-    }
-
-    protected boolean isAnswerSetLine(String line) {
-        boolean retVal = CLINGO_ATOMS_REGEX.matcher(line).matches();
-        LOGGER.debug("line = {}, matches atoms regex? {}", line, retVal);
         return retVal;
     }
 

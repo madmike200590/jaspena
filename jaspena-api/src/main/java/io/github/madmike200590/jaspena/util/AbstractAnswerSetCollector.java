@@ -28,6 +28,7 @@ public abstract class AbstractAnswerSetCollector implements Callable<Iterable<Se
         BufferedReader br = new BufferedReader(new InputStreamReader(this.solverOutput));
         String line;
         Set<String> currAnswerSet = null;
+        Set<String> lineAtoms = null;
         while ((line = br.readLine()) != null) {
             LOGGER.debug("Collecting line: {}", line);
             if (this.isAnswerSetStart(line)) {
@@ -37,8 +38,9 @@ public abstract class AbstractAnswerSetCollector implements Callable<Iterable<Se
                 }
                 currAnswerSet = new HashSet<>();
             } else {
-                if (this.isAnswerSetLine(line)) {
-                    currAnswerSet.addAll(this.extractAtoms(line));
+                lineAtoms = this.extractAtoms(line);
+                if (!lineAtoms.isEmpty()) {
+                    currAnswerSet.addAll(lineAtoms);
                 }
             }
         }
@@ -47,8 +49,6 @@ public abstract class AbstractAnswerSetCollector implements Callable<Iterable<Se
         return retVal;
     }
 
-    protected abstract boolean isAnswerSetLine(String line);
-    
     protected abstract Set<String> extractAtoms(String line);
 
     protected abstract boolean isAnswerSetStart(String line);

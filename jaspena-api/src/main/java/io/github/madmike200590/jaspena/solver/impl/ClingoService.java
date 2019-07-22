@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +34,12 @@ public class ClingoService extends AbstractAspSolverService {
     private String              clingoCommand            = "clingo";
     private ExecutorService     streamCollectors;
 
+    private boolean             randomize;
+
+    public ClingoService(boolean randomize) {
+        this.randomize = randomize;
+    }
+
     @Override
     public synchronized Stream<Set<String>> solve(String program, Predicate<String> filter, int numAnswerSets)
             throws AspSolverException {
@@ -44,7 +49,7 @@ public class ClingoService extends AbstractAspSolverService {
             proc = this.startClingo(numAnswerSets);
         } catch (IOException ex) {
             LOGGER.error("Failed starting clingo process!", ex);
-            throw new AspSolverException(
+            this.bailOut(
                     "Failed starting clingo process! (nested exception is: " + ex.getMessage() + ")");
         }
         InputStream errStream = proc.getErrorStream();
@@ -52,7 +57,8 @@ public class ClingoService extends AbstractAspSolverService {
         OutputStream procInput = proc.getOutputStream();
 
         Future<String> procStdErrFuture = this.streamCollectors.submit(new InputStreamCollector(errStream));
-        Future<Iterable<Set<String>>> procStdOutFuture = this.streamCollectors.submit(new ClingoAnswerSetCollector(outStream));
+        Future<Iterable<Set<String>>> procStdOutFuture = this.streamCollectors
+                .submit(new ClingoAnswerSetCollector(outStream));
 
         PrintStream ps = new PrintStream(procInput);
         ps.println(program);
@@ -63,7 +69,7 @@ public class ClingoService extends AbstractAspSolverService {
             clingoExitCode = proc.waitFor();
         } catch (InterruptedException ex) {
             LOGGER.error("Interrupted while waiting for clingo..", ex);
-            throw new AspSolverException("Interrupted while waiting for Clingo!");
+            this.bailOut("Interrupted while waiting for Clingo!");
         }
 
         Iterable<Set<String>> clingoOut = null;
@@ -73,13 +79,13 @@ public class ClingoService extends AbstractAspSolverService {
             clingoOut = procStdOutFuture.get();
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception collecting process out/err streams", ex);
-            throw new AspSolverException("Failed to obtain process output from Clingo!");
+            this.bailOut("Failed to obtain process output from Clingo!");
         }
 
         if (clingoExitCode == CLINGO_EXIT_INPUT_ERR
                 || clingoExitCode == CLINGO_EXIT_INTERRUPTED1 || clingoExitCode == CLINGO_EXIT_INTERRUPTED2
                 || clingoExitCode == CLINGO_EXIT_INTERRUPTED3) {
-            throw new AspSolverException(
+            this.bailOut(
                     "Clingo exited abnormally, exit code = " + clingoExitCode + "\nstderr:\n" + clingoErr);
         }
         this.streamCollectors.shutdown();
@@ -87,7 +93,20 @@ public class ClingoService extends AbstractAspSolverService {
     }
 
     private Process startClingo(int numAnswerSets) throws IOException {
-        return Runtime.getRuntime().exec(new String[] { this.clingoCommand, "-n", Integer.toString(numAnswerSets) });
+        Process retVal = null;
+        if (this.randomize) {
+            retVal = Runtime.getRuntime().exec(new String[] { this.clingoCommand, "-n", Integer.toString(numAnswerSets),
+                    "--sign-def=rnd", "--seed=" + System.currentTimeMillis()/1000 });
+        } else {
+            retVal = Runtime.getRuntime()
+                    .exec(new String[] { this.clingoCommand, "-n", Integer.toString(numAnswerSets) });
+        }
+        return retVal;
+    }
+
+    private void bailOut(String errMsg) throws AspSolverException {
+        this.streamCollectors.shutdown();
+        throw new AspSolverException(errMsg);
     }
 
 }

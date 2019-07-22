@@ -14,7 +14,7 @@ import io.github.madmike200590.jaspena.solver.IAspSolverService;
 
 public class ClingoServiceTest {
 
-    private IAspSolverService solverService = new ClingoService();
+    private IAspSolverService solverService = new ClingoService(false);
 
     @Test
     @Ignore
