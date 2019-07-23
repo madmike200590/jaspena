@@ -1,21 +1,19 @@
 package io.github.madmike200590.jaspena.types;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import io.github.madmike200590.jaspena.types.term.Term;
-
+/**
+ * TODO hashCode, equals!
+ * 
+ * @author michael
+ *
+ */
 public class Predicate {
 
-    private final String        symbol;
-    private final int           arity;
-    private final List<Term<?>> terms;
+    private final String symbol;
+    private final int    arity;
 
-    public Predicate(String symbol, Term<?>... terms) {
+    public Predicate(String symbol, int arity) {
         this.symbol = symbol;
-        this.terms = Arrays.asList(terms);
-        this.arity = this.terms.size();
+        this.arity = arity;
     }
 
     public String getSymbol() {
@@ -24,10 +22,6 @@ public class Predicate {
 
     public int getArity() {
         return this.arity;
-    }
-
-    public List<Term<?>> getTerms() {
-        return Collections.unmodifiableList(this.terms);
     }
 
 }
