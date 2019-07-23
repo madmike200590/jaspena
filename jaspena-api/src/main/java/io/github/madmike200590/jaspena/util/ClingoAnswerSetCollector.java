@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
 
+    @SuppressWarnings("unused")
     private static final Logger  LOGGER                       = LoggerFactory
             .getLogger(AbstractAnswerSetCollector.class);
 
@@ -18,8 +20,8 @@ public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
     private static final Pattern CLINGO_ATOMS_REGEX           = Pattern.compile(
             "-?[a-z][a-zA-Z0-9_]*(\\(([a-z][a-zA-Z0-9_]*|[0-9]+)(,([a-z][a-zA-Z0-9_]*|[0-9]+))*\\))?");
 
-    public ClingoAnswerSetCollector(InputStream is) {
-        super(is);
+    public ClingoAnswerSetCollector(InputStream is, Predicate<String> filter) {
+        super(is, filter);
     }
 
     @Override

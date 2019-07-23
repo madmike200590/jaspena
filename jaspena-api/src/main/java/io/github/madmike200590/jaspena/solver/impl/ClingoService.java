@@ -58,7 +58,7 @@ public class ClingoService extends AbstractAspSolverService {
 
         Future<String> procStdErrFuture = this.streamCollectors.submit(new InputStreamCollector(errStream));
         Future<Iterable<Set<String>>> procStdOutFuture = this.streamCollectors
-                .submit(new ClingoAnswerSetCollector(outStream));
+                .submit(new ClingoAnswerSetCollector(outStream, filter));
 
         PrintStream ps = new PrintStream(procInput);
         ps.println(program);
