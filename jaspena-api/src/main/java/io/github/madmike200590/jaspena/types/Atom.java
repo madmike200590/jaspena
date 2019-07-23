@@ -3,6 +3,8 @@ package io.github.madmike200590.jaspena.types;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * An incomplete, very basic implementation of a ground atom as contained in
  * answer sets out of a solver. No support for nested terms, really only
@@ -35,6 +37,14 @@ public class Atom {
 
     public List<String> getTerms() {
         return Collections.unmodifiableList(this.terms);
+    }
+
+    @Override
+    public String toString() {
+        if (this.terms.isEmpty()) {
+            return this.getPredicate().getSymbol();
+        }
+        return this.getPredicate().getSymbol() + "(" + StringUtils.join(this.terms, ",") + ")";
     }
 
 }

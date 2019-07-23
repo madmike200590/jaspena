@@ -17,8 +17,6 @@ public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
             .getLogger(AbstractAnswerSetCollector.class);
 
     private static final Pattern CLINGO_ANSWERSET_START_REGEX = Pattern.compile("Answer: [0-9]+");
-    private static final Pattern CLINGO_ATOMS_REGEX           = Pattern.compile(
-            "-?[a-z][a-zA-Z0-9_]*(\\(([a-z][a-zA-Z0-9_]*|[0-9]+)(,([a-z][a-zA-Z0-9_]*|[0-9]+))*\\))?");
 
     public ClingoAnswerSetCollector(InputStream is, Predicate<String> filter) {
         super(is, filter);
@@ -29,7 +27,7 @@ public class ClingoAnswerSetCollector extends AbstractAnswerSetCollector {
         String[] atoms = line.split(" ");
         Set<String> retVal = new HashSet<>();
         for (String atom : atoms) {
-            if (!CLINGO_ATOMS_REGEX.matcher(atom).matches()) {
+            if (!AnswerSets.BASIC_ATOM_REGEX.matcher(atom).matches()) {
                 return retVal;
             }
         }
