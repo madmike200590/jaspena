@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.madmike200590.jaspena.exception.AspSolverException;
+import io.github.madmike200590.jaspena.parsing.IAnswerSetParser;
+import io.github.madmike200590.jaspena.parsing.impl.BasicAnswerSetParser;
+import io.github.madmike200590.jaspena.types.AnswerSet;
 import io.github.madmike200590.jaspena.util.ClingoAnswerSetCollector;
 import io.github.madmike200590.jaspena.util.InputStreamCollector;
 
@@ -33,6 +38,7 @@ public class ClingoService extends AbstractAspSolverService {
 
     private String              clingoCommand            = "clingo";
     private ExecutorService     streamCollectors;
+    private IAnswerSetParser    answerSetParser          = new BasicAnswerSetParser();
 
     private boolean             randomize;
 
@@ -41,7 +47,7 @@ public class ClingoService extends AbstractAspSolverService {
     }
 
     @Override
-    public synchronized Stream<Set<String>> solve(String program, Predicate<String> filter, int numAnswerSets)
+    public synchronized Stream<AnswerSet> solve(String program, Predicate<String> filter, int numAnswerSets)
             throws AspSolverException {
         Process proc = null;
         this.streamCollectors = Executors.newFixedThreadPool(2);
@@ -89,14 +95,18 @@ public class ClingoService extends AbstractAspSolverService {
                     "Clingo exited abnormally, exit code = " + clingoExitCode + "\nstderr:\n" + clingoErr);
         }
         this.streamCollectors.shutdown();
-        return StreamSupport.stream(clingoOut.spliterator(), false);
+        List<AnswerSet> answerSets = new ArrayList<>();
+        for (Set<String> answerSet : clingoOut) {
+            answerSets.add(this.answerSetParser.parse(answerSet));
+        }
+        return StreamSupport.stream(answerSets.spliterator(), false);
     }
 
     private Process startClingo(int numAnswerSets) throws IOException {
         Process retVal = null;
         if (this.randomize) {
             retVal = Runtime.getRuntime().exec(new String[] { this.clingoCommand, "-n", Integer.toString(numAnswerSets),
-                    "--sign-def=rnd", "--seed=" + System.currentTimeMillis()/1000 });
+                    "--sign-def=rnd", "--seed=" + System.currentTimeMillis() / 1000 });
         } else {
             retVal = Runtime.getRuntime()
                     .exec(new String[] { this.clingoCommand, "-n", Integer.toString(numAnswerSets) });

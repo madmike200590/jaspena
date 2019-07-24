@@ -1,5 +1,6 @@
 package io.github.madmike200590.jaspena.solver.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 import io.github.madmike200590.jaspena.exception.AspSolverException;
 import io.github.madmike200590.jaspena.solver.IAspSolverService;
+import io.github.madmike200590.jaspena.types.AnswerSet;
+import io.github.madmike200590.jaspena.util.AnswerSets;
 
 public class ClingoServiceTest {
 
@@ -26,20 +29,28 @@ public class ClingoServiceTest {
     @Test
     public void testSimpleAtom() throws AspSolverException {
         String aspProg = "a.";
-        Stream<Set<String>> answerSets = this.solverService.solve(aspProg, 0);
-        List<Set<String>> answerSetList = answerSets.collect(Collectors.toList());
-        Assert.assertEquals(1, answerSetList.size());
-        Set<String> answer = answerSetList.get(0);
+        Stream<AnswerSet> answerSets = this.solverService.solve(aspProg, 0);
+        List<AnswerSet> answerSetList = answerSets.collect(Collectors.toList());
+        List<Set<String>> answerSetStringList = new ArrayList<>();
+        for (AnswerSet answerSet : answerSetList) {
+            answerSetStringList.add(AnswerSets.toStringSet(answerSet));
+        }
+        Assert.assertEquals(1, answerSetStringList.size());
+        Set<String> answer = answerSetStringList.get(0);
         Assert.assertTrue(answer.contains("a"));
     }
 
     @Test
     public void testEmptySet() throws AspSolverException {
         String aspProg = "{a}.";
-        Stream<Set<String>> answerSets = this.solverService.solve(aspProg, 0);
-        List<Set<String>> answerSetList = answerSets.collect(Collectors.toList());
-        Assert.assertEquals(2, answerSetList.size());
-        for (Set<String> answer : answerSetList) {
+        Stream<AnswerSet> answerSets = this.solverService.solve(aspProg, 0);
+        List<AnswerSet> answerSetList = answerSets.collect(Collectors.toList());
+        List<Set<String>> answerSetStringList = new ArrayList<>();
+        for (AnswerSet answerSet : answerSetList) {
+            answerSetStringList.add(AnswerSets.toStringSet(answerSet));
+        }
+        Assert.assertEquals(2, answerSetStringList.size());
+        for (Set<String> answer : answerSetStringList) {
             Assert.assertTrue(answer.contains("a") || answer.isEmpty());
         }
     }

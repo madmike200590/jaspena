@@ -2,9 +2,15 @@ package io.github.madmike200590.jaspena.util;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.madmike200590.jaspena.types.AnswerSet;
+import io.github.madmike200590.jaspena.types.Atom;
+import io.github.madmike200590.jaspena.types.Predicate;
 
 public final class AnswerSets {
 
@@ -39,6 +45,16 @@ public final class AnswerSets {
         String tmpTerms = termsMatcher.group();
         String terms = tmpTerms.substring(1, tmpTerms.length() - 1);
         return Arrays.asList(terms.split(","));
+    }
+
+    public static Set<String> toStringSet(AnswerSet answerSet) {
+        Set<String> retVal = new HashSet<>();
+        for (Predicate pred : answerSet.getPredicates()) {
+            for (Atom atom : answerSet.getAtomsForPredicate(pred)) {
+                retVal.add(atom.toString());
+            }
+        }
+        return retVal;
     }
 
 }

@@ -12,7 +12,7 @@ public class AnswerSet {
     public AnswerSet(Map<Predicate, Set<Atom>> atoms) {
         this.atoms = atoms;
     }
-    
+
     public Set<Atom> getAtomsForPredicate(Predicate pred) {
         if (!this.atoms.containsKey(pred)) {
             return Collections.emptySet();
@@ -20,17 +20,24 @@ public class AnswerSet {
         return Collections.unmodifiableSet(this.atoms.get(pred));
     }
 
+    public Set<Predicate> getPredicates() {
+        if (this.atoms.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.atoms.keySet());
+    }
+
     @Override
     public String toString() {
         StringBuilder bld = new StringBuilder();
         bld.append("AnswerSet {").append(System.lineSeparator());
-        for(Entry<Predicate, Set<Atom>> entry : this.atoms.entrySet()) {
-            for(Atom atom : entry.getValue()) {
+        for (Entry<Predicate, Set<Atom>> entry : this.atoms.entrySet()) {
+            for (Atom atom : entry.getValue()) {
                 bld.append("\t").append(atom.toString()).append(System.lineSeparator());
             }
         }
         bld.append("}");
         return bld.toString();
     }
-    
+
 }
