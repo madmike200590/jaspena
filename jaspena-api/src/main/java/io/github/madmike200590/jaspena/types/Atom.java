@@ -16,7 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 public class Atom {
 
     private final Predicate    predicate;
-    private final List<String> terms;
+    private final List<String> terms; // TODO make this an array for fast reads
+    
+    // TODO getTYPE(int idx) methods analoguous to sql result set
+    // TODO enum mapping!
 
     private Atom(Predicate predicate, List<String> terms) {
         this.predicate = predicate;

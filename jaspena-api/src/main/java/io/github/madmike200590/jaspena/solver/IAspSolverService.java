@@ -8,6 +8,7 @@ import io.github.madmike200590.jaspena.types.AnswerSet;
 
 public interface IAspSolverService {
 
+    // TODO methods for firstAnswerSet and allAnswerSets
     public static final int DEFAULT_NUM_ANSWER_SETS = 1;
 
     Stream<AnswerSet> solve(String program) throws AspSolverException;

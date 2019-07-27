@@ -57,4 +57,13 @@ public final class AnswerSets {
         return retVal;
     }
 
+    public static String asProgram(AnswerSet answerSet) {
+        StringBuilder bld = new StringBuilder();
+        Set<String> answerSetAtoms = AnswerSets.toStringSet(answerSet);
+        for (String atom : answerSetAtoms) {
+            bld.append(atom).append(".").append("\n");
+        }
+        return bld.toString();
+    }
+
 }

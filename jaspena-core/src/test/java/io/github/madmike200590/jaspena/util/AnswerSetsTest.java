@@ -3,9 +3,14 @@ package io.github.madmike200590.jaspena.util;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.github.madmike200590.jaspena.parsing.impl.BasicAnswerSetParser;
+import io.github.madmike200590.jaspena.types.AnswerSet;
 
 public class AnswerSetsTest {
 
@@ -32,6 +37,24 @@ public class AnswerSetsTest {
     public void testExtractTermsZeroArity() {
         String atom = "aPredicateWithArityZero";
         Assert.assertEquals(Collections.emptyList(), AnswerSets.extractTerms(atom));
+    }
+
+    @Test
+    public void testAnswerSetToProgram() {
+        Set<String> atoms = new TreeSet<>();
+        atoms.add("a(a)");
+        atoms.add("a(b)");
+        atoms.add("some_shit(of,1)");
+        atoms.add("x(a)");
+        atoms.add("x(y,z)");
+        AnswerSet as = new BasicAnswerSetParser().parse(atoms);
+        String prog = AnswerSets.asProgram(as);
+        String expectedProg = "a(b).\n"
+                + "x(y,z).\n"
+                + "a(a).\n"
+                + "x(a).\n"
+                + "some_shit(of,1).\n";
+        Assert.assertEquals(expectedProg, prog);
     }
 
 }
