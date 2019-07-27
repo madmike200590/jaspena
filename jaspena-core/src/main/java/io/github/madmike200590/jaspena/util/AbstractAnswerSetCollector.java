@@ -32,9 +32,13 @@ public abstract class AbstractAnswerSetCollector implements Callable<Iterable<Se
         String line;
         Set<String> currAnswerSet = null;
         Set<String> lineAtoms = null;
+        boolean satisfiable = false;
         while ((line = br.readLine()) != null) {
             LOGGER.debug("Collecting line: {}", line);
             if (this.isAnswerSetStart(line)) {
+                if (!satisfiable) {
+                    satisfiable = true;
+                }
                 LOGGER.debug("Found start of new answer set");
                 if (currAnswerSet != null) {
                     retVal.add(currAnswerSet);
@@ -43,16 +47,19 @@ public abstract class AbstractAnswerSetCollector implements Callable<Iterable<Se
             } else {
                 lineAtoms = this.extractAtoms(line);
                 if (!lineAtoms.isEmpty()) {
-                    for(String atom : lineAtoms) {
-                        if(this.atomFilter.test(atom)) {
+                    for (String atom : lineAtoms) {
+                        if (this.atomFilter.test(atom)) {
                             currAnswerSet.add(atom);
                         }
                     }
                 }
             }
         }
-        retVal.add(currAnswerSet);
         br.close();
+        if (!satisfiable) {
+            return null;
+        }
+        retVal.add(currAnswerSet);
         return retVal;
     }
 

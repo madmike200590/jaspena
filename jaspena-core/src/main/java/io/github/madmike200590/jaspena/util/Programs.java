@@ -11,6 +11,10 @@ public final class Programs {
 
     }
 
+    public static String loadAspCode(Path src) throws IOException {
+        return Programs.loadAspCode(src, new String[] {});
+    }
+
     public static String loadAspCode(Path src, String... directives) throws IOException {
         StringBuilder bld = new StringBuilder();
         for (String directive : directives) {

@@ -2,12 +2,20 @@ package io.github.madmike200590.jaspena.dbg;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+
+import io.github.madmike200590.jaspena.solver.IAspSolverService;
+import io.github.madmike200590.jaspena.solver.impl.ClingoService;
+import io.github.madmike200590.jaspena.types.AnswerSet;
+import io.github.madmike200590.jaspena.util.AnswerSets;
+import io.github.madmike200590.jaspena.util.Programs;
 
 public class Debugger {
 
@@ -32,8 +40,9 @@ public class Debugger {
     }
 
     // TODO argument to choose solver!
-    public static void main(String[] args) throws ParseException {
-        int numAnswerSets;
+    // FIXME proper arg parsing, proper exception handling
+    public static void main(String[] args) throws Exception {
+        int numAnswerSets = 1;
         String dbgCodeFile = null;
 
         CommandLine commandLine = new DefaultParser().parse(CLI_OPTS, args);
@@ -50,11 +59,40 @@ public class Debugger {
             }
         }
 
+        if (dbgCodeFile == null) {
+            throw new IllegalArgumentException("need to specify a debug file!");
+        }
+
         Path aspFile = Paths.get(commandLine.getArgs()[0]);
         Path dbgFile = Paths.get(dbgCodeFile);
 
         System.out.println("Debugging " + aspFile.toString() + " using dbg file " + dbgFile.toString());
 
+        String asp = Programs.loadAspCode(aspFile);
+        String debugAsp = Programs.loadAspCode(dbgFile);
+        doDebugExecution(asp, debugAsp, numAnswerSets);
+    }
+
+    private static void doDebugExecution(String asp, String debugAsp, int numAnswerSets) throws Exception {
+        IAspSolverService solverService = new ClingoService(false);
+        Stream<AnswerSet> answerSets = solverService.solve(asp, numAnswerSets);
+        List<AnswerSet> answerSetList = answerSets.collect(Collectors.toList());
+        int cnt = 1;
+        String resultProg;
+        Stream<AnswerSet> debugResult;
+        List<AnswerSet> dbgResultLst;
+        for (AnswerSet as : answerSetList) {
+            System.out.println("Got answer set " + cnt++ + " from solver:\n" + as);
+            resultProg = AnswerSets.asProgram(as) + "\n" + debugAsp;
+            System.out.println("\n\nSolving debug program:\n" + resultProg);
+            debugResult = solverService.solve(resultProg);
+            dbgResultLst = debugResult.collect(Collectors.toList());
+            if (dbgResultLst.size() != 1) {
+                throw new IllegalStateException("Expected only one answer set from debug program!");
+            }
+            System.out.println(
+                    "Got debug result: \n" + dbgResultLst.get(0) + "\n\n****************************************\n");
+        }
     }
 
 }

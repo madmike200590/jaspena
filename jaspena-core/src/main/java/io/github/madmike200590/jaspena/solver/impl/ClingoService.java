@@ -96,6 +96,10 @@ public class ClingoService extends AbstractAspSolverService {
         }
         this.streamCollectors.shutdown();
         List<AnswerSet> answerSets = new ArrayList<>();
+        if (clingoOut == null) {
+            LOGGER.info("No answer set - input was unsatisfiable");
+            return Stream.empty();
+        }
         for (Set<String> answerSet : clingoOut) {
             answerSets.add(this.answerSetParser.parse(answerSet));
         }
