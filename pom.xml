@@ -18,6 +18,7 @@
 	<modules>
 		<module>jaspena-api</module>
 		<module>jaspena-core</module>
+		<module>jaspena-dbg</module>
 	</modules>
 
 	<dependencies>
