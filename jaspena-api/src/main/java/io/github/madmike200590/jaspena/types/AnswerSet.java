@@ -20,6 +20,34 @@ public class AnswerSet {
         return Collections.unmodifiableSet(this.atoms.get(pred));
     }
 
+    public Set<Atom> getAtomsForPredicate(String predSymbol, int arity) {
+        return this.getAtomsForPredicate(new Predicate(predSymbol, arity));
+    }
+
+    /**
+     * Fetches a single atom for the given predicate. If there is more than one
+     * atom for that predicate, an exception is thrown. Likewise, an exception
+     * is thrown when there are not atoms.
+     * 
+     * @param pred
+     *            the predicate to look for
+     * @return an Atom for the given predicate
+     * @throws IllegalArgumentException
+     *             if more than one or no atom exists for the given predicate
+     */
+    public Atom getAtomForPredicate(Predicate pred) {
+        Set<Atom> atoms = this.getAtomsForPredicate(pred);
+        if (atoms.isEmpty() || atoms.size() > 1) {
+            throw new IllegalArgumentException("Illegal request - there are " + atoms.size()
+                    + " instances of predicate " + pred.getSymbol() + "/" + pred.getArity());
+        }
+        return atoms.iterator().next();
+    }
+
+    public Atom getAtomForPredicate(String predName, int arity) {
+        return this.getAtomForPredicate(new Predicate(predName, arity));
+    }
+
     public Set<Predicate> getPredicates() {
         if (this.atoms.isEmpty()) {
             return Collections.emptySet();

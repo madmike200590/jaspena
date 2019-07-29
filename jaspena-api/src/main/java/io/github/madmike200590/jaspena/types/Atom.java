@@ -16,9 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 public class Atom {
 
     private final Predicate    predicate;
-    private final List<String> terms; // TODO make this an array for fast reads
-    
-    // TODO getTYPE(int idx) methods analoguous to sql result set
+    private final List<String> terms;    // TODO make this an array for fast
+                                         // reads
     // TODO enum mapping!
 
     private Atom(Predicate predicate, List<String> terms) {
@@ -48,6 +47,14 @@ public class Atom {
             return this.getPredicate().getSymbol();
         }
         return this.getPredicate().getSymbol() + "(" + StringUtils.join(this.terms, ",") + ")";
+    }
+
+    public int getInt(int idx) {
+        return Integer.valueOf(this.terms.get(idx));
+    }
+
+    public String getString(int idx) {
+        return this.terms.get(idx);
     }
 
 }
