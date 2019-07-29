@@ -48,6 +48,14 @@ public class AnswerSet {
         return this.getAtomForPredicate(new Predicate(predName, arity));
     }
 
+    public int instancesOf(Predicate pred) {
+        return this.getAtomsForPredicate(pred).size();
+    }
+
+    public int instancesOf(String predName, int arity) {
+        return this.instancesOf(new Predicate(predName, arity));
+    }
+
     public Set<Predicate> getPredicates() {
         if (this.atoms.isEmpty()) {
             return Collections.emptySet();
