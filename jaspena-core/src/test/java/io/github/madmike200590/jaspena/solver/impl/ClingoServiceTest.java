@@ -61,5 +61,5 @@ public class ClingoServiceTest {
         Stream<AnswerSet> answerSets = this.solverService.solve(aspProg, 0);
         Assert.assertTrue(answerSets.count() == 0);
     }
-
+    
 }
