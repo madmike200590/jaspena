@@ -1,7 +1,6 @@
 package io.github.madmike200590.jaspena.types;
 
 /**
- * TODO hashCode, equals!
  * 
  * @author michael
  *
