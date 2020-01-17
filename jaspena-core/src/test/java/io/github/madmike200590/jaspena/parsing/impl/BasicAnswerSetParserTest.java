@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import io.github.madmike200590.jaspena.types.AnswerSet;
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 
 public class BasicAnswerSetParserTest {
 

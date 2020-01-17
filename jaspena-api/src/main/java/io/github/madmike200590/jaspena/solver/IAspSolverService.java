@@ -3,8 +3,8 @@ package io.github.madmike200590.jaspena.solver;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.exception.AspSolverException;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 
 public interface IAspSolverService {
 

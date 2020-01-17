@@ -1,8 +1,12 @@
-package io.github.madmike200590.jaspena.types;
+package io.github.madmike200590.jaspena.asp;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import io.github.madmike200590.jaspena.types.Atom;
+import io.github.madmike200590.jaspena.types.Predicate;
+
 import java.util.Set;
 
 public class AnswerSet {

@@ -10,9 +10,9 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.exception.AspSolverException;
 import io.github.madmike200590.jaspena.solver.IAspSolverService;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 import io.github.madmike200590.jaspena.util.AnswerSets;
 
 public class ClingoServiceTest {

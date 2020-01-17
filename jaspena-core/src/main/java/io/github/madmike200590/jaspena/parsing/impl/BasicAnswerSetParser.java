@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.exception.AspSyntaxException;
 import io.github.madmike200590.jaspena.parsing.IAnswerSetParser;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 import io.github.madmike200590.jaspena.types.Atom;
 import io.github.madmike200590.jaspena.types.Predicate;
 import io.github.madmike200590.jaspena.util.AnswerSets;

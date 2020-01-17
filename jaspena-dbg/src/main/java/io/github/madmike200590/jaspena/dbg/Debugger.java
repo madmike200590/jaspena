@@ -11,9 +11,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.solver.IAspSolverService;
 import io.github.madmike200590.jaspena.solver.impl.ClingoService;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 import io.github.madmike200590.jaspena.util.AnswerSets;
 import io.github.madmike200590.jaspena.util.Programs;
 

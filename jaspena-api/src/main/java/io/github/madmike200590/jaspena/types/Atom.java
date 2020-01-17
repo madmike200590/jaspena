@@ -1,5 +1,6 @@
 package io.github.madmike200590.jaspena.types;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +32,19 @@ public class Atom {
                     + ", but " + terms.size() + " terms were supplied!");
         }
         return new Atom(pred, terms);
+    }
+
+    public static Atom newInstance(String predicateSymbol, String... terms) {
+        Predicate predicate = new Predicate(predicateSymbol, terms.length);
+        return Atom.newInstance(predicate, terms);
+    }
+
+    public static Atom newInstance(Predicate pred, String... terms) {
+        List<String> termList = new ArrayList<>();
+        for (String term : terms) {
+            termList.add(term);
+        }
+        return new Atom(pred, termList);
     }
 
     public Predicate getPredicate() {

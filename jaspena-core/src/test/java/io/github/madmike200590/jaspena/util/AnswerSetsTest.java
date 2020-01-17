@@ -9,8 +9,8 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.parsing.impl.BasicAnswerSetParser;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 
 public class AnswerSetsTest {
 

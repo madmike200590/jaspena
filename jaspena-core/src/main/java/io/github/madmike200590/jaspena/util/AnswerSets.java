@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.madmike200590.jaspena.types.AnswerSet;
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.types.Atom;
 import io.github.madmike200590.jaspena.types.Predicate;
 

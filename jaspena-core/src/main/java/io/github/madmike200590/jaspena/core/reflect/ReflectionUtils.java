@@ -3,13 +3,13 @@
  */
 package io.github.madmike200590.jaspena.core.reflect;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -24,22 +24,24 @@ import io.github.madmike200590.jaspena.annotations.AspField;
 // TODO take into account boolean fields with "isFLDNAME" naming
 public final class ReflectionUtils {
 
-    private static final Logger           LOGGER       = LoggerFactory.getLogger(ReflectionUtils.class);
-
-    private static final Predicate<Field> IS_ASP_FIELD = (f) -> f.isAnnotationPresent(AspField.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
 
     private ReflectionUtils() {
 
     }
 
     public static List<Field> getAspFieldsForType(Class<?> clazz) {
+        return ReflectionUtils.getFieldsAnnotatedWith(clazz, AspField.class);
+    }
+
+    public static List<Field> getFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotation) {
         List<Field> fields = new ArrayList<>();
         fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         Class<?> tmpSuperClass = clazz;
         while ((tmpSuperClass = tmpSuperClass.getSuperclass()) != null) {
             fields.addAll(Arrays.asList(tmpSuperClass.getDeclaredFields()));
         }
-        return fields.stream().filter(ReflectionUtils.IS_ASP_FIELD).collect(Collectors.toList());
+        return fields.stream().filter(f -> f.isAnnotationPresent(annotation)).collect(Collectors.toList());
     }
 
     public static Method getGetterForField(Field fld) throws NoSuchMethodException, SecurityException {

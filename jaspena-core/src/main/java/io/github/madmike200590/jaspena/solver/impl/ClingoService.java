@@ -18,10 +18,10 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.madmike200590.jaspena.asp.AnswerSet;
 import io.github.madmike200590.jaspena.exception.AspSolverException;
 import io.github.madmike200590.jaspena.parsing.IAnswerSetParser;
 import io.github.madmike200590.jaspena.parsing.impl.BasicAnswerSetParser;
-import io.github.madmike200590.jaspena.types.AnswerSet;
 import io.github.madmike200590.jaspena.util.ClingoAnswerSetCollector;
 import io.github.madmike200590.jaspena.util.InputStreamCollector;
 
