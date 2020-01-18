@@ -1,12 +1,6 @@
 package io.github.madmike200590.jaspena.types.term;
 
-public abstract class Term<T> {
-
-    protected final T value;
-
-    public Term(T value) {
-        this.value = value;
-    }
+public abstract class Term {
 
     public abstract boolean isGround();
 
@@ -18,9 +12,5 @@ public abstract class Term<T> {
 
     @Override
     public abstract String toString();
-
-    public T getValue() {
-        return this.value;
-    }
 
 }

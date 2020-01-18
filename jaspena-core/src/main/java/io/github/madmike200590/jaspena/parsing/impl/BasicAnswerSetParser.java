@@ -29,7 +29,7 @@ public class BasicAnswerSetParser implements IAnswerSetParser {
             tmpPredicateSymbol = AnswerSets.extractPredicateSymbol(atomStr);
             tmpTerms = AnswerSets.extractTerms(atomStr);
             tmpPredicate = new Predicate(tmpPredicateSymbol, tmpTerms.size());
-            tmpAtom = Atom.newInstance(tmpPredicate, tmpTerms);
+            tmpAtom = Atom.newGroundInstance(tmpPredicate, tmpTerms);
             if (!answerSet.containsKey(tmpPredicate)) {
                 answerSet.put(tmpPredicate, new HashSet<>());
             }

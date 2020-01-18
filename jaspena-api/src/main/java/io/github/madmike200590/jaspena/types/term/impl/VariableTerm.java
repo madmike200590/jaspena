@@ -4,13 +4,15 @@ import io.github.madmike200590.jaspena.exception.AspSyntaxException;
 import io.github.madmike200590.jaspena.types.Formats;
 import io.github.madmike200590.jaspena.types.term.Term;
 
-public class Variable extends Term<String> {
+public class VariableTerm extends Term {
 
-    public Variable(String value) {
-        super(value);
-        if (!Formats.matchesVariableFormat(value)) {
-            throw new AspSyntaxException("Not a valid variable name: " + value);
+    private final String name;
+
+    public VariableTerm(String name) {
+        if (!Formats.matchesVariableFormat(name)) {
+            throw new AspSyntaxException("Not a valid variable name: " + name);
         }
+        this.name = name;
     }
 
     @Override
@@ -20,20 +22,20 @@ public class Variable extends Term<String> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Variable)) {
+        if (!(o instanceof VariableTerm)) {
             return false;
         }
-        Variable other = (Variable) o;
-        return this.value.equals(other.value);
+        VariableTerm other = (VariableTerm) o;
+        return this.name.equals(other.name);
     }
 
     public int hashCode() {
-        return this.value.hashCode();
+        return this.name.hashCode();
     }
 
     @Override
     public String toString() {
-        return this.value;
+        return this.name;
     }
 
 }

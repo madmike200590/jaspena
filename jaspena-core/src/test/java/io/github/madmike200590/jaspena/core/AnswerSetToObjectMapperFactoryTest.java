@@ -27,15 +27,15 @@ public class AnswerSetToObjectMapperFactoryTest {
         atoms.put(new Predicate("can_graduate", 0), Collections.emptySet());
 
         Set<Atom> electiveOpen = new HashSet<>();
-        Atom electiveCectsAtom = Atom.newInstance("elective_cects_open", "1234");
+        Atom electiveCectsAtom = Atom.newGroundInstance("elective_cects_open", "1234");
         electiveOpen.add(electiveCectsAtom);
         atoms.put(electiveCectsAtom.getPredicate(), electiveOpen);
 
         Predicate mandatoryOpenPred = new Predicate("mandatory_cid_open", 1);
         Set<Atom> mandatoryOpen = new HashSet<>();
-        mandatoryOpen.add(Atom.newInstance(mandatoryOpenPred, "cid1"));
-        mandatoryOpen.add(Atom.newInstance(mandatoryOpenPred, "cid2"));
-        mandatoryOpen.add(Atom.newInstance(mandatoryOpenPred, "cid3"));
+        mandatoryOpen.add(Atom.newGroundInstance(mandatoryOpenPred, "cid1"));
+        mandatoryOpen.add(Atom.newGroundInstance(mandatoryOpenPred, "cid2"));
+        mandatoryOpen.add(Atom.newGroundInstance(mandatoryOpenPred, "cid3"));
         atoms.put(mandatoryOpenPred, mandatoryOpen);
         AnswerSet answerSet = new AnswerSet(atoms);
 

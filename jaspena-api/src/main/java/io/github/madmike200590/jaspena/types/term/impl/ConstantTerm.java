@@ -2,10 +2,12 @@ package io.github.madmike200590.jaspena.types.term.impl;
 
 import io.github.madmike200590.jaspena.types.term.Term;
 
-public class Constant<T> extends Term<T> {
+public class ConstantTerm<T> extends Term {
 
-    public Constant(T value) {
-        super(value);
+    private final T value;
+
+    public ConstantTerm(T value) {
+        this.value = value;
     }
 
     @Override
@@ -15,10 +17,10 @@ public class Constant<T> extends Term<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Constant)) {
+        if (!(o instanceof ConstantTerm)) {
             return false;
         }
-        Constant<?> other = (Constant<?>) o;
+        ConstantTerm<?> other = (ConstantTerm<?>) o;
         return this.value.equals(other.value);
     }
 
@@ -30,6 +32,10 @@ public class Constant<T> extends Term<T> {
     @Override
     public String toString() {
         return this.value.toString();
+    }
+
+    public T getValue() {
+        return this.value;
     }
 
 }
