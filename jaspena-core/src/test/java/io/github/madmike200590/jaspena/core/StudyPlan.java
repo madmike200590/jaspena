@@ -1,19 +1,17 @@
 package io.github.madmike200590.jaspena.core;
 
-import java.util.List;
-
 import io.github.madmike200590.jaspena.annotations.Atom;
 
 public class StudyPlan {
 
-    @Atom
-    private boolean      canGraduate;
+    @Atom(name = "can_graduate")
+    private boolean canGraduate;
 
-    @Atom
-    private int          electiveCoursesCEctsOpen;
+    @Atom(name = "elective_cects_open")
+    private int     electiveCoursesCEctsOpen;
 
-    @Atom
-    private List<String> mandatoryCourseIdsOpen;
+    // @Atom
+    // private List<String> mandatoryCourseIdsOpen;
 
     public boolean canGraduate() {
         return this.canGraduate;
@@ -35,12 +33,13 @@ public class StudyPlan {
         return this.canGraduate;
     }
 
-    public List<String> getMandatoryCourseIdsOpen() {
-        return this.mandatoryCourseIdsOpen;
-    }
-
-    public void setMandatoryCourseIdsOpen(List<String> mandatoryCourseIdsOpen) {
-        this.mandatoryCourseIdsOpen = mandatoryCourseIdsOpen;
-    }
+    // public List<String> getMandatoryCourseIdsOpen() {
+    // return this.mandatoryCourseIdsOpen;
+    // }
+    //
+    // public void setMandatoryCourseIdsOpen(List<String>
+    // mandatoryCourseIdsOpen) {
+    // this.mandatoryCourseIdsOpen = mandatoryCourseIdsOpen;
+    // }
 
 }

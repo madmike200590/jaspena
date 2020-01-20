@@ -1,16 +1,11 @@
 package io.github.madmike200590.jaspena.core;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.github.madmike200590.jaspena.annotations.Atom;
 import io.github.madmike200590.jaspena.core.reflect.ReflectionUtils;
@@ -18,9 +13,6 @@ import io.github.madmike200590.jaspena.exception.AspMappingException;
 import io.github.madmike200590.jaspena.mapper.IAnswerSetToObjectMapper;
 
 public class AnswerSetToObjectMapperFactory {
-
-    private static final Logger                        LOGGER              = LoggerFactory
-            .getLogger(AnswerSetToObjectMapperFactory.class);
 
     private final Map<Class<?>, Map<String, AtomInfo>> classToAtomMappings = new HashMap<>();
     private final Map<Class<?>, IAtomDataExtractor<?>> atomDataExtractors  = new HashMap<>();
@@ -33,22 +25,11 @@ public class AnswerSetToObjectMapperFactory {
         this.atomDataExtractors.put(boolean.class, AtomDataExtractors::atomToBoolean);
     }
 
-    @SuppressWarnings("unchecked")
     public <T> IAnswerSetToObjectMapper<T> createMapperFor(Class<T> clazz) throws AspMappingException {
         if (!this.classToAtomMappings.containsKey(clazz)) {
             this.register(clazz);
         }
-        return (IAnswerSetToObjectMapper<T>) Proxy.newProxyInstance(
-                AnswerSetToObjectMapperFactory.class.getClassLoader(),
-                new Class<?>[] { IAnswerSetToObjectMapper.class },
-                new InvocationHandler() {
-
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        LOGGER.debug("Called method: {}", method.getName());
-                        return null;
-                    }
-                });
+        return new ReflectiveAnswerSetToObjectMapper<>(clazz, this.classToAtomMappings.get(clazz));
     }
 
     public void register(Class<?> clazz) throws AspMappingException {
@@ -58,27 +39,40 @@ public class AnswerSetToObjectMapperFactory {
         }
         Map<String, AtomInfo> atomMappings = new LinkedHashMap<>();
         AtomInfo tmpAtomInfo;
-        String tmpAtomName;
-        Atom tmpAnnotation;
-        Class<?> tmpTargetType;
-        IAtomDataExtractor<?> tmpDataConverter;
         for (Field fld : atomProperties) {
-            tmpAnnotation = fld.getAnnotation(Atom.class);
-            tmpAtomName = tmpAnnotation.name();
-            tmpTargetType = fld.getType();
-            tmpDataConverter = this.atomDataExtractors.get(tmpTargetType);
-            if (tmpDataConverter == null) {
-                throw new AspMappingException(
-                        "No data extractor found for target type: " + tmpTargetType.getSimpleName());
-            }
-            tmpAtomInfo = new AtomInfo();
-            tmpAtomInfo.setName(tmpAtomName);
-            tmpAtomInfo.setTargetType(tmpTargetType);
-            tmpAtomInfo.setTargetField(fld);
-            tmpAtomInfo.setAspDataConverter(tmpDataConverter);
-            atomMappings.put(tmpAtomName, tmpAtomInfo);
+            tmpAtomInfo = this.buildAtomInfo(fld);
+            atomMappings.put(tmpAtomInfo.getName(), tmpAtomInfo);
         }
         this.classToAtomMappings.put(clazz, atomMappings);
+    }
+
+    private AtomInfo buildAtomInfo(Field fld) throws AspMappingException {
+        AtomInfo retVal;
+        Atom annotation = fld.getAnnotation(Atom.class);
+        String atomName = annotation.name();
+        Class<?> targetType = fld.getType();
+        IAtomDataExtractor<?> dataExtractor = this.atomDataExtractors.get(targetType);
+        if (dataExtractor == null) {
+            throw new AspMappingException(
+                    "No data extractor found for target type: " + targetType.getSimpleName());
+        }
+        Method setterMethod = null;
+        try {
+            setterMethod = ReflectionUtils.getSetterForField(fld);
+        } catch (NoSuchMethodException ex) {
+            throw new AspMappingException("No setter method found for field " + fld.toString());
+        }
+        retVal = new AtomInfo();
+        retVal.setName(atomName);
+        retVal.setTargetType(targetType);
+        if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
+            retVal.setArity(0);
+        } else {
+            retVal.setArity(1);
+        }
+        retVal.setSetterMethod(setterMethod);
+        retVal.setAspDataConverter(dataExtractor);
+        return retVal;
     }
 
 }

@@ -1,16 +1,14 @@
 package io.github.madmike200590.jaspena.core;
 
-import java.lang.reflect.Field;
-import java.util.function.Function;
-
-import io.github.madmike200590.jaspena.types.Atom;
+import java.lang.reflect.Method;
 
 public class AtomInfo {
 
     private String                name;
+    private int                   arity;
     private IAtomDataExtractor<?> aspDataConverter;
     private Class<?>              targetType;
-    private Field                 targetField;
+    private Method                setterMethod;
 
     public String getName() {
         return this.name;
@@ -36,12 +34,20 @@ public class AtomInfo {
         this.targetType = targetType;
     }
 
-    public Field getTargetField() {
-        return this.targetField;
+    public Method getSetterMethod() {
+        return this.setterMethod;
     }
 
-    public void setTargetField(Field targetField) {
-        this.targetField = targetField;
+    public void setSetterMethod(Method setterMethod) {
+        this.setterMethod = setterMethod;
+    }
+
+    public int getArity() {
+        return this.arity;
+    }
+
+    public void setArity(int arity) {
+        this.arity = arity;
     }
 
 }
